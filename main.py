@@ -4,8 +4,7 @@ import os
 from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 
-
-from train import train_batch
+from train import train_batch, train
 
 if __name__ == "__main__":
     # neural network architecture
@@ -45,8 +44,8 @@ if __name__ == "__main__":
     X_test = np.transpose(X_test)
     y_test = np.transpose(y_test.reshape((y_test.shape[0], 1)))
 
-    # params_values, cost_history, accuracy_history = train(X=X_train, Y=y_train, nn_architecture=NN_ARCHITECTURE,
-    #       learning_rate=LR, epochs=N_EPOCHS)
+    network, cost_history, accuracy_history = train(X=X_train, Y=y_train, nn_architecture=NN_ARCHITECTURE,
+                                                    learning_rate=LR, epochs=N_EPOCHS, type="categorical")
 
-    params_values_batch, cost_history_batch, accuracy_history_batch = train_batch(
-        X_train, y_train, NN_ARCHITECTURE, N_EPOCHS, LR, 64)
+    # network, cost_history_batch, accuracy_history_batch = train_batch(
+    #     X_train, y_train, NN_ARCHITECTURE, N_EPOCHS, LR, 64)

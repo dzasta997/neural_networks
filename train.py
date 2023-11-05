@@ -1,34 +1,47 @@
-from models import init_layers, full_forward_propagation, get_cost_value, get_accuracy_value, full_backward_propagation, \
-    update
+from models import NeuralNetwork, get_cost_value, get_accuracy_value
 
 
-def train(X, Y, nn_architecture, epochs, learning_rate, verbose=False, callback=None):
-    params_values = init_layers(nn_architecture, 2)
+def train(X, Y, nn_architecture, epochs, learning_rate, type):
+    network = NeuralNetwork(
+        input_dim=1,
+        output_dim=1,
+        num_hidden_layers=1,
+        hidden_dim=1,
+        architecture=nn_architecture,
+        initialization="he",
+        learning_rate=0.02
+    )
+    network.init_layers()
     cost_history = []
     accuracy_history = []
 
     for i in range(epochs):
-        Y_hat, cashe = full_forward_propagation(X, params_values, nn_architecture)
+        Y_hat, memory= network.full_forward_propagation(X)
 
-        cost = get_cost_value(Y_hat, Y)
+        cost = get_cost_value(Y_hat=Y_hat, Y=Y, type=type)
         cost_history.append(cost)
-        accuracy = get_accuracy_value(Y_hat, Y)
+        accuracy = get_accuracy_value(Y_hat=Y_hat, Y=Y)
         accuracy_history.append(accuracy)
 
-        grads_values = full_backward_propagation(Y_hat, Y, cashe, params_values, nn_architecture)
-        params_values = update(params_values, grads_values, nn_architecture, learning_rate)
+        grads_values = network.full_backward_propagation(Y_hat=Y_hat, Y=Y)
+        params_values = network.update()
 
-        if (i % 50 == 0):
-            if (verbose):
-                print("Iteration: {:05} - cost: {:.5f} - accuracy: {:.5f}".format(i, cost, accuracy))
-            if (callback is not None):
-                callback(i, params_values)
-
-    return params_values, cost_history, accuracy_history
+    return network, cost_history, accuracy_history
 
 
 def train_batch(X, Y, nn_architecture, epochs, learning_rate, batch_size=64, verbose=False, callback=None):
-    params_values = init_layers(nn_architecture, 2)
+    network = NeuralNetwork(
+        input_dim=1,
+        output_dim=1,
+        num_hidden_layers=1,
+        hidden_dim=1,
+        architecture=nn_architecture,
+        initialization="he",
+        learning_rate=0.02
+    )
+    network.init_layers()
+
+    # params_values = init_layers(nn_architecture, 2)
     cost_history = []
     accuracy_history = []
 
@@ -44,21 +57,15 @@ def train_batch(X, Y, nn_architecture, epochs, learning_rate, batch_size=64, ver
         Y_batch = Y[:, batch_idx * batch_size: (batch_idx + 1) * batch_size]
         # Ending of additional code snippet
 
-        Y_hat, cashe = full_forward_propagation(X_batch, params_values, nn_architecture)
+        Y_hat, memory = network.full_forward_propagation(X_batch)
 
         cost = get_cost_value(Y_hat, Y_batch)
         cost_history.append(cost)
         accuracy = get_accuracy_value(Y_hat, Y_batch)
         accuracy_history.append(accuracy)
 
-        grads_values = full_backward_propagation(Y_hat, Y_batch, cashe, params_values,
-                                                                    nn_architecture)
-        params_values = update(params_values, grads_values, nn_architecture, learning_rate)
+        # just for debugging purposes
+        grads_values = network.full_backward_propagation(Y_hat, Y_batch)
+        params_values = network.update()
 
-        if (i % 50 == 0):
-            if (verbose):
-                print("Iteration: {:05} - cost: {:.5f} - accuracy: {:.5f}".format(i, cost, accuracy))
-            if (callback is not None):
-                callback(i, params_values)
-
-    return params_values, cost_history, accuracy_history
+    return network, cost_history, accuracy_history
