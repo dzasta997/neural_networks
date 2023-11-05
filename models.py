@@ -1,10 +1,3 @@
-# File:         fully_connected_nn.py
-# Version:      1.0
-# Author:       SkalskiP https://github.com/SkalskiP
-# Date:         31.10.2018
-# Description:  The file contains a simple implementation of a fully connected neural network.
-#               The original implementation can be found in the Medium article:
-#               https://towardsdatascience.com/lets-code-a-neural-network-in-plain-numpy-ae7e74410795
 import logging
 
 import numpy as np
